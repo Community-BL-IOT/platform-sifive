@@ -158,14 +158,15 @@ target_elf = None
 if "nobuild" in COMMAND_LINE_TARGETS:
     target_elf = join("$BUILD_DIR", "${PROGNAME}.elf")
     target_hex = join("$BUILD_DIR", "${PROGNAME}.hex")
+    target_bin = join("$BUILD_DIR", "${PROGNAME}.bin")
 else:
     target_elf = env.BuildProgram()
     target_hex = env.ElfToHex(join("$BUILD_DIR", "${PROGNAME}"), target_elf)
     target_bin = env.ElfToBin(join("$BUILD_DIR", "${PROGNAME}"), target_elf)
     env.Depends(target_hex, "checkprogsize")
 
-AlwaysBuild(env.Alias("nobuild", target_hex))
-target_buildprog = env.Alias("buildprog", target_hex, target_hex)
+AlwaysBuild(env.Alias("nobuild", [target_hex, target_bin]))
+target_buildprog = env.Alias("buildprog", [target_hex, target_bin], target_hex)
 
 #
 # Target: Print binary size
